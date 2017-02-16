@@ -6,7 +6,7 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 14:29:16 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/15 17:54:09 by schevall         ###   ########.fr       */
+/*   Updated: 2017/02/16 17:12:10 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,8 @@
 
 # define WIDTH 2000
 # define HEIGHT 1200
-# define DEPTH 3
-# define CTE 0.75;
-
+# define ISO1 0.75
+# define ISO2 0.75
 
 typedef struct	s_coord
 {
@@ -49,7 +48,7 @@ typedef struct	s_par
 	void			*img_p;
 	char			*mem;
 	int				bpp;
-	int				sizeline;
+	int				sline;
 	int				endian;
 }				t_par;
 
