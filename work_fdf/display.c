@@ -6,40 +6,84 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/15 16:14:28 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/16 17:12:13 by schevall         ###   ########.fr       */
+/*   Updated: 2017/02/17 17:48:16 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-int		draw_point(t_coord *l, t_par *p)
+void	put_pixel(int X, int Y, t_par *par, int mode)
 {
-	unsigned int color;
 	char *mem_tmp;
-	int X;
-	int Y;
 
-	mem_tmp = p->mem;
-	color = mlx_get_color_value(p->mlx_p, WHITE);
-	ft_printf("l.x = %d, l.y = %d\n", l->x, l->y);
-	X = ISO1 * l->x - ISO2 * l->y;
-	Y = l->z + (ISO1 / 2) * l->x + (ISO2 / 2) * l->y;
-//	X = l->x - l->y;
-//	Y = l->z + l->x + l->y;
-	ft_printf("X = %d, Y = %d\n", X, Y);
-	if (X > WIDTH || Y > HEIGHT || X < 0 || Y < 0)
-		return (0);
-	p->mem += p->bpp * X + p->sline * Y;
-	*p->mem = color;
-	p->mem = mem_tmp;
-	return (1);
+	mem_tmp = par->mem + ((par->bpp/8) * X + par->sline * Y);
+	if (mode == 1)
+		*(int*)mem_tmp = mlx_get_color_value(par->mlx_p, WHITE);
+	else
+		*(int*)mem_tmp = mlx_get_color_value(par->mlx_p, RED);
 }
 
-int		draw_segment(t_coord *line, t_coord *dest)
+int		draw_segment(t_coord *ori, t_coord *dest, t_par *par)
 {
-	if (!line || !dest)
+	int x1;
+	int y1;
+	int dx;
+	int dy;
+	int Dx;
+	int Dy;
+	int ex;
+	int ey;
+	int x_incr;
+	int y_incr;
+	int i;
+
+	if (!dest)
 		return (0);
-	
+	x_incr = 1;
+	y_incr = 1;
+	x1 = ori->X;
+	y1 = ori->Y;
+	ex = ft_abs(dest->X - ori->X);
+	ey = ft_abs(dest->Y - ori->Y);
+	dx = 2 * ex;
+	dy = 2 * ey;
+	Dx = ex;
+	Dy = ey;
+	i = 0;
+	if (ori->X > dest->X)
+		x_incr = -1;
+	if (ori->Y > dest->Y)
+		y_incr = -1;
+	if (Dx > Dy)
+	{
+		while (i <= Dx)
+		{
+			put_pixel(x1, y1, par, 2);
+			i++;
+			x1 += x_incr;
+			ex -= dy;
+			if (ex < 0)
+			{
+				y1 += y_incr;
+				ex += dx;
+			}
+		}
+	}
+	else
+	{
+		while (i <= Dy)
+		{
+			put_pixel(x1, y1, par, 2);
+			i++;
+			y1 += y_incr;
+			ey -= dx;
+			if (ex < 0)
+			{
+				x1 += x_incr;
+				ey += dy;
+			}
+		}
+	}
 	return (1);
 }
 
@@ -53,9 +97,8 @@ void	create_image(t_coord *map, t_par *p)
 		line = map;
 		while (line)
 		{
-			draw_point(line, p);
-			draw_segment(line, line->right);
-			draw_segment(line, line->down);
+			draw_segment(line, line->right, p);
+			draw_segment(line, line->down, p);
 			line = line->right;
 		}
 		map = map->down;
@@ -72,7 +115,7 @@ void	display(t_coord *map)
 	{
 		params.img_p = mlx_new_image(params.mlx_p, WIDTH, HEIGHT);
 		create_image(map, &params);
-		mlx_put_image_to_window(params.mlx_p, params.win_p, params.img_p, 0, 0);
+		mlx_put_image_to_window(params.mlx_p, params.win_p, params.img_p, 300, 300);
 		mlx_key_hook(params.win_p, my_keys, &params);
 		mlx_loop(params.mlx_p);
 	}

@@ -6,7 +6,7 @@
 #    By: schevall <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/01/10 10:27:19 by schevall          #+#    #+#              #
-#    Updated: 2017/02/14 16:11:15 by schevall         ###   ########.fr        #
+#    Updated: 2017/02/17 16:21:39 by schevall         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,6 +14,7 @@ NAME = libft.a
 FLAG = -Wall -Wextra -Werror
 OPTION = -c
 SRC = ft_atoi.c\
+	  ft_abs.c\
 	  ft_isalnum.c\
 	  ft_isalpha.c\
 	  ft_bzero.c\

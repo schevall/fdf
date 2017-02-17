@@ -6,7 +6,7 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 14:29:16 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/16 17:12:10 by schevall         ###   ########.fr       */
+/*   Updated: 2017/02/17 17:48:22 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,21 +21,23 @@
 
 # define PRG_NAME "Fdf"
 
-# define WHITE 0xFFFFFF
-# define RED 0xFF0000
-# define GREEN 0x00FF00
-# define BLUE 0x0000FF
+# define WHITE 0x00FFFFFF
+# define RED 0x00FF0000
+# define GREEN 0x0000FF00
+# define BLUE 0x000000FF
 
 # define WIDTH 2000
 # define HEIGHT 1200
-# define ISO1 0.75
-# define ISO2 0.75
+# define ISO1 0.5
+# define ISO2 0.5
 
 typedef struct	s_coord
 {
 	int				x;
 	int				y;
 	int				z;
+	int				X;
+	int				Y;
 	int				color;
 	struct s_coord	*right;
 	struct s_coord	*down;
