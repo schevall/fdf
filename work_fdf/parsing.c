@@ -6,7 +6,7 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/15 12:34:00 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/17 17:48:19 by schevall         ###   ########.fr       */
+/*   Updated: 2017/02/20 17:52:34 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,6 @@ static t_coord	*add_point(int x, int y, char *line, int *i)
 	point->y = y;
 	line += *i;
 	point->z = -1 * ft_atoi(line);
-	point->X = 10 * (2 * x - 2 * y + 20);
-	point->Y = 10 * (point->z + x + y + 20);
 	if (line[n] == '+' || line[n] == '-')
 		n++;
 	while (ft_isdigit(line[n]))
@@ -54,6 +52,8 @@ static int	parse_line(char *line, t_coord **map, int y)
 			x++;
 		}
 	}
+	if (x == 0)
+		fdf_error(4, "Map error\n");
 	return (1);
 }
 
@@ -93,11 +93,11 @@ void	link_point(t_coord *map)
 	}
 }
 
-t_coord *parsing(int fd)
+void	parsing(int fd, t_par *p)
 {
 	t_coord *map;
 
 	make_map(fd, &map);
 	link_point(map);
-	return (map);
+	p->map = map;
 }

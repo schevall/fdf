@@ -6,7 +6,7 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 14:29:16 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/17 17:48:22 by schevall         ###   ########.fr       */
+/*   Updated: 2017/02/20 17:52:40 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,8 @@
 # define GREEN 0x0000FF00
 # define BLUE 0x000000FF
 
-# define WIDTH 2000
-# define HEIGHT 1200
-# define ISO1 0.5
-# define ISO2 0.5
+# define WIDTH 2500
+# define HEIGHT 1300
 
 typedef struct	s_coord
 {
@@ -45,19 +43,30 @@ typedef struct	s_coord
 
 typedef struct	s_par
 {
-	void			*mlx_p;
-	void			*win_p;
-	void			*img_p;
+	void			*mlx;
+	void			*win;
+	t_coord			*map;
+	size_t			zoom;
+	int				img_orix;
+	int				img_oriy;
+	int				max_x;
+	int				max_y;
+	int				img_w;
+	int				img_h;
+	int				offset_x;
+	int				offset_y;
+	void			*img;
 	char			*mem;
 	int				bpp;
 	int				sline;
 	int				endian;
 }				t_par;
 
-t_coord	*parsing(int fd);
-void	display(t_coord *map);
+void	parsing(int fd, t_par *p);
+void	init_display(t_par *p);
+void	display_img(t_par *par);
 void	init_fdf_params(void *mlx_p, void *win_p, t_par *params);
-int		my_keys(int keycode, void *params);
+int		keys(int keycode, t_par *p);
 void	fdf_error(int mode, char *error);
 
 #endif

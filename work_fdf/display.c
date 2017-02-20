@@ -6,21 +6,19 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/15 16:14:28 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/17 17:48:16 by schevall         ###   ########.fr       */
+/*   Updated: 2017/02/20 17:52:36 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	put_pixel(int X, int Y, t_par *par, int mode)
+void	put_pixel(int X, int Y, t_par *p)
 {
 	char *mem_tmp;
 
-	mem_tmp = par->mem + ((par->bpp/8) * X + par->sline * Y);
-	if (mode == 1)
-		*(int*)mem_tmp = mlx_get_color_value(par->mlx_p, WHITE);
-	else
-		*(int*)mem_tmp = mlx_get_color_value(par->mlx_p, RED);
+//	ft_printf("init init put_pixel, X = %d, Y = %d\n", X, Y);
+	mem_tmp = p->mem + p->bpp/8 * X + p->sline * Y;
+	*(int*)mem_tmp = mlx_get_color_value(p->mlx, WHITE);
 }
 
 int		draw_segment(t_coord *ori, t_coord *dest, t_par *par)
@@ -50,15 +48,13 @@ int		draw_segment(t_coord *ori, t_coord *dest, t_par *par)
 	Dx = ex;
 	Dy = ey;
 	i = 0;
-	if (ori->X > dest->X)
-		x_incr = -1;
-	if (ori->Y > dest->Y)
-		y_incr = -1;
+	ori->X > dest->X ? x_incr = -1 : 1;
+	ori->Y > dest->Y ? y_incr = -1 : 1;
 	if (Dx > Dy)
 	{
 		while (i <= Dx)
 		{
-			put_pixel(x1, y1, par, 2);
+			put_pixel(x1, y1, par);
 			i++;
 			x1 += x_incr;
 			ex -= dy;
@@ -73,11 +69,11 @@ int		draw_segment(t_coord *ori, t_coord *dest, t_par *par)
 	{
 		while (i <= Dy)
 		{
-			put_pixel(x1, y1, par, 2);
+			put_pixel(x1, y1, par);
 			i++;
 			y1 += y_incr;
 			ey -= dx;
-			if (ex < 0)
+			if (ey < 0)
 			{
 				x1 += x_incr;
 				ey += dy;
@@ -87,36 +83,60 @@ int		draw_segment(t_coord *ori, t_coord *dest, t_par *par)
 	return (1);
 }
 
-void	create_image(t_coord *map, t_par *p)
+void	create_image(t_par *p)
 {
+	t_coord *tmp;
 	t_coord *line;
 
-	p->mem = mlx_get_data_addr(p->img_p, &(p->bpp), &(p->sline), &(p->endian));
-	while (map)
+	p->mem = mlx_get_data_addr(p->img, &(p->bpp), &(p->sline), &(p->endian));
+	tmp = p->map;
+	while (tmp)
 	{
-		line = map;
+		line = tmp;
 		while (line)
 		{
 			draw_segment(line, line->right, p);
 			draw_segment(line, line->down, p);
 			line = line->right;
 		}
-		map = map->down;
+		tmp = tmp->down;
+	}
+
+}
+
+void	get_iso_coord(t_coord *map, t_par *p)
+{
+	t_coord *tmp;
+	t_coord *line;
+
+	tmp = map;
+//	ft_printf("init iso coord, map x = %d, y = %d, X = %d, Y = %d\n", map->x, map->y, map->X, map->Y);
+	while (tmp)
+	{
+		line = tmp;
+		while (line)
+		{
+			line->X = p->zoom * (2 * line->x - 2 * line->y + p->offset_x);
+			line->Y = p->zoom * (line->z + line->x + line->y + p->offset_y);
+			line = line->right;
+		}
+		tmp = tmp->down;
 	}
 }
 
-void	display(t_coord *map)
+void	display_img(t_par *p)
 {
-	t_par	params;
+	p->img = mlx_new_image(p->mlx, WIDTH, HEIGHT);
+	get_iso_coord(p->map, p);
+	create_image(p);
+	mlx_put_image_to_window(p->mlx, p->win, p->img, p->img_orix, p->img_oriy);
+	mlx_key_hook(p->win, &keys, p);
+	mlx_loop(p->mlx);
+}
 
-	params.mlx_p = mlx_init();
-	params.win_p = mlx_new_window(params.mlx_p, WIDTH, HEIGHT, PRG_NAME);
-	while (42)
-	{
-		params.img_p = mlx_new_image(params.mlx_p, WIDTH, HEIGHT);
-		create_image(map, &params);
-		mlx_put_image_to_window(params.mlx_p, params.win_p, params.img_p, 300, 300);
-		mlx_key_hook(params.win_p, my_keys, &params);
-		mlx_loop(params.mlx_p);
-	}
+void	init_display(t_par *p)
+{
+	p->mlx = mlx_init();
+	p->win = mlx_new_window(p->mlx, WIDTH, HEIGHT, PRG_NAME);
+	display_img(p);
 }
