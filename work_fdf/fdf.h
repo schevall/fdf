@@ -6,7 +6,7 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 14:29:16 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/20 17:52:40 by schevall         ###   ########.fr       */
+/*   Updated: 2017/02/21 18:13:03 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # define RED 0x00FF0000
 # define GREEN 0x0000FF00
 # define BLUE 0x000000FF
+# define BROWN 0x00884100
 
 # define WIDTH 2500
 # define HEIGHT 1300
@@ -37,6 +38,7 @@ typedef struct	s_coord
 	int				X;
 	int				Y;
 	int				color;
+	int				elevated;
 	struct s_coord	*right;
 	struct s_coord	*down;
 }				t_coord;
@@ -51,8 +53,11 @@ typedef struct	s_par
 	int				img_oriy;
 	int				max_x;
 	int				max_y;
-	int				img_w;
-	int				img_h;
+	int				max_z;
+	int				color;
+	int				color_variato;
+	int				z_pad;
+	int				img_size;
 	int				offset_x;
 	int				offset_y;
 	void			*img;

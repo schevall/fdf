@@ -6,19 +6,57 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/15 16:14:28 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/20 17:52:36 by schevall         ###   ########.fr       */
+/*   Updated: 2017/02/21 18:12:51 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	put_pixel(int X, int Y, t_par *p)
+unsigned int	color_tab(t_par *p)
+{
+	unsigned int color;
+	int index;
+
+	index = p->color % 4;
+	if (index == 0)
+		color = mlx_get_color_value(p->mlx, WHITE);
+	if (index == 1)
+		color = mlx_get_color_value(p->mlx, RED);
+	if (index == 2)
+		color = mlx_get_color_value(p->mlx, GREEN);
+	if (index == 3)
+		color = mlx_get_color_value(p->mlx, BLUE);
+	return (color);
+}
+
+void	get_color_spec(t_coord *point)
+{
+	int z;
+
+	z = -1 * point->z;
+	if (z < 0)
+		point->color = BLUE;
+	else if (z == 0)
+		point->color = GREEN;
+	else if (z > 0)
+		point->color = BROWN;
+
+}
+
+void	put_pixel(int X, int Y, int color, t_par *p)
 {
 	char *mem_tmp;
 
+	
 //	ft_printf("init init put_pixel, X = %d, Y = %d\n", X, Y);
-	mem_tmp = p->mem + p->bpp/8 * X + p->sline * Y;
-	*(int*)mem_tmp = mlx_get_color_value(p->mlx, WHITE);
+	if ((X > 0 && X < (WIDTH / 8)) || (Y > 0 && Y < HEIGHT))
+	{
+		mem_tmp = p->mem + p->bpp/8 * X + p->sline * Y;
+		if (p->color_variato)
+			*(int*)mem_tmp = mlx_get_color_value(p->mlx, color);
+		else
+			*(int*)mem_tmp = color_tab(p);
+	}
 }
 
 int		draw_segment(t_coord *ori, t_coord *dest, t_par *par)
@@ -35,6 +73,10 @@ int		draw_segment(t_coord *ori, t_coord *dest, t_par *par)
 	int y_incr;
 	int i;
 
+	int color;
+	int color_gap;
+	int	color_incr;
+
 	if (!dest)
 		return (0);
 	x_incr = 1;
@@ -50,11 +92,15 @@ int		draw_segment(t_coord *ori, t_coord *dest, t_par *par)
 	i = 0;
 	ori->X > dest->X ? x_incr = -1 : 1;
 	ori->Y > dest->Y ? y_incr = -1 : 1;
+	color = ori->color;
+	color_gap = ft_abs(ori->color - dest->color) / 256;
 	if (Dx > Dy)
 	{
+		color_incr = color_gap / Dx / 256;
 		while (i <= Dx)
 		{
-			put_pixel(x1, y1, par);
+			put_pixel(x1, y1, color, par);
+			color += color_incr;
 			i++;
 			x1 += x_incr;
 			ex -= dy;
@@ -67,9 +113,11 @@ int		draw_segment(t_coord *ori, t_coord *dest, t_par *par)
 	}
 	else
 	{
+		color_incr = color_gap / Dy / 256;
 		while (i <= Dy)
 		{
-			put_pixel(x1, y1, par);
+			put_pixel(x1, y1, color, par);
+			color += color_incr;
 			i++;
 			y1 += y_incr;
 			ey -= dx;
@@ -88,6 +136,7 @@ void	create_image(t_par *p)
 	t_coord *tmp;
 	t_coord *line;
 
+//	ft_printf("init create_image\n");
 	p->mem = mlx_get_data_addr(p->img, &(p->bpp), &(p->sline), &(p->endian));
 	tmp = p->map;
 	while (tmp)
@@ -101,6 +150,7 @@ void	create_image(t_par *p)
 		}
 		tmp = tmp->down;
 	}
+//	ft_printf("end create_image\n");
 
 }
 
@@ -116,12 +166,19 @@ void	get_iso_coord(t_coord *map, t_par *p)
 		line = tmp;
 		while (line)
 		{
+			if (ft_abs(line->z) > 0)
+				line->elevated = 1;
+			if (line->elevated)
+				line->z += p->z_pad;
+			if (p->color_variato)
+				get_color_spec(line);
 			line->X = p->zoom * (2 * line->x - 2 * line->y + p->offset_x);
 			line->Y = p->zoom * (line->z + line->x + line->y + p->offset_y);
 			line = line->right;
 		}
 		tmp = tmp->down;
 	}
+//	ft_printf("end get_iso_coord\n");
 }
 
 void	display_img(t_par *p)
