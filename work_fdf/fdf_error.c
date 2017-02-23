@@ -6,7 +6,7 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/15 12:21:15 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/15 17:54:13 by schevall         ###   ########.fr       */
+/*   Updated: 2017/02/23 19:38:28 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,4 @@ void	fdf_error(int mode, char *error)
 	else if (mode == 4)
 		ft_putendl_fd(error, 2);
 	exit(EXIT_FAILURE);
-
 }

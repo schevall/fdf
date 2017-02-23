@@ -6,7 +6,7 @@
 #    By: schevall <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/02/13 17:35:39 by schevall          #+#    #+#              #
-#    Updated: 2017/02/17 12:47:25 by schevall         ###   ########.fr        #
+#    Updated: 2017/02/23 19:38:26 by schevall         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,8 @@ SRC = main_fdf.c\
 	  fdf_error.c\
 	  parsing.c\
 	  display.c\
+	  get_coord.c\
+	  color.c\
 
 OBJ_NAME = $(SRC:.c=.o)
 
