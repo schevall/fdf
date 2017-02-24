@@ -6,11 +6,32 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/13 17:30:47 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/23 19:38:20 by schevall         ###   ########.fr       */
+/*   Updated: 2017/02/24 18:37:29 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
+
+void	init_img_spec(t_par *p, int mode)
+{
+	if (mode == 1)
+	{
+		p->color = 0;
+		p->z_pad = 0;
+		p->color_funct_z = 0;
+		p->coord_type = 1;
+		p->color_img = 1;
+		p->ratio_z = 1;
+	}
+	p->ratio_x = 20;
+	p->ratio_y = 20;
+	p->width = WIDTH;
+	p->height = HEIGHT;
+	p->max_xs = INT_MIN;
+	p->max_ys = INT_MIN;
+	p->min_xs = INT_MAX;
+	p->min_ys = INT_MAX;
+}
 
 int		keys(int keycode, t_par *p)
 {
@@ -18,34 +39,26 @@ int		keys(int keycode, t_par *p)
 		exit(EXIT_SUCCESS);
 	else if (keycode == 8)
 		p->color++;
-	else if (keycode == 6 && p->z_pad > 1)
-		p->z_pad--;
-	else if (keycode == 7 && p->z_pad < 10)
-		p->z_pad++;
 	else if (keycode == 11)
 		p->coord_type++;
 	else if (keycode == 9)
 		p->color_img++;
+	else if (keycode == 6)
+		p->z_pad = -2;
+	else if (keycode == 7)
+		p->z_pad = 2;
+	else if (keycode == 5)
+		p->color_funct_z = ((p->color_funct_z == 0) ? 1 : 0);
+	else if (keycode == 0 && p->ratio_z > -15)
+		p->ratio_z -= 2;
+	else if (keycode == 1 && p->ratio_z < 15)
+		p->ratio_z += 2;
+	if (keycode != 6 && keycode != 7)
+		p->z_pad = 0;
+	init_img_spec(p, 2);
 	mlx_destroy_window(p->mlx, p->win);
-	mlx_destroy_image(p->mlx, p->img);
-	display_img(p);
+	display_img(p, 2);
 	return (0);
-}
-
-void	init_img_spec(t_par *p)
-{
-	p->ratio_x = 20;
-	p->ratio_y = 20;
-	p->width = WIDTH;
-	p->height = HEIGHT;
-	p->max_xs = 0;
-	p->max_ys = 0;
-	p->min_xs = INT_MAX;
-	p->min_ys = INT_MAX;
-	p->color = 0;
-	p->z_pad = 3;
-	p->coord_type = 1;
-	p->color_img = 1;
 }
 
 int		main(int ac, char **av)
@@ -59,9 +72,11 @@ int		main(int ac, char **av)
 		fdf_error(3, av[1]);
 	parsing(fd, &par);
 	close(fd);
-	init_img_spec(&par);
+	init_img_spec(&par, 1);
 	get_coord(&par);
-	get_offset_and_zoom(&par);
-	display_img(&par);
+	get_ratio(&par);
+	get_new_coord(&par);
+	par.mlx = mlx_init();
+	display_img(&par, 1);
 	return (0);
 }

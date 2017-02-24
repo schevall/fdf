@@ -6,20 +6,23 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/15 16:14:28 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/23 19:38:16 by schevall         ###   ########.fr       */
+/*   Updated: 2017/02/24 18:53:57 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	put_pixel(int x, int y, t_par *p)
+void	put_pixel(int x, int y, t_par *p, t_coord *ori, t_coord *dest)
 {
 	char		*mem_tmp;
 
 	if ((x > 0 && x <= p->width) || (y > 0 && y <= p->height))
 	{
 		mem_tmp = p->mem + p->bpp / 8 * x + p->sline * y;
-		*(int*)mem_tmp = color_tab(p);
+		if (p->color_funct_z == 1)
+			*(int*)mem_tmp = color_with_z(ori, dest, p);
+		else
+			*(int*)mem_tmp = color_tab(p);
 	}
 }
 
@@ -45,7 +48,7 @@ int		draw_segment(t_coord *ori, t_coord *dest, t_par *p)
 	init_segment(&s, ori, dest);
 	while (s.x != dest->xs || s.y != dest->ys)
 	{
-		put_pixel(s.x, s.y, p);
+		put_pixel(s.x, s.y, p, ori, dest);
 		s.e2 = s.e1;
 		if (s.e2 > -s.dx)
 		{
@@ -75,7 +78,7 @@ void	create_image(t_par *p)
 		point = tmp;
 		while (point)
 		{
-			put_pixel(point->xs, point->ys, p);
+			put_pixel(point->xs, point->ys, p, point, point);
 			draw_segment(point, point->right, p);
 			draw_segment(point, point->down, p);
 			point = point->right;
@@ -84,15 +87,18 @@ void	create_image(t_par *p)
 	}
 }
 
-void	display_img(t_par *p)
+void	display_img(t_par *p, int mode)
 {
-	p->mlx = mlx_init();
-	get_coord(p);
-	get_offset_and_zoom(p);
-	p->win = mlx_new_window(p->mlx, p->width + 20, p->height + 20, PRG_NAME);
+	if (mode == 2)
+	{
+		get_coord(p);
+		get_ratio(p);
+		get_new_coord(p);
+	}
+	p->win = mlx_new_window(p->mlx, p->width + 2, p->height + 2, PRG_NAME);
 	p->img = mlx_new_image(p->mlx, p->width, p->height);
 	create_image(p);
-	mlx_put_image_to_window(p->mlx, p->win, p->img, 5, 5);
+	mlx_put_image_to_window(p->mlx, p->win, p->img, 1, 1);
 	mlx_key_hook(p->win, &keys, p);
 	mlx_loop(p->mlx);
 }

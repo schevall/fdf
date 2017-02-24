@@ -6,7 +6,7 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/15 12:34:00 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/23 19:38:22 by schevall         ###   ########.fr       */
+/*   Updated: 2017/02/24 18:30:25 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,11 @@ t_coord	*add_point(int x, int y, char *line, int *i)
 		n++;
 	while (ft_isdigit(line[n]))
 		n++;
-	*i += n;
+	if (line[n] == ',')
+		n += 9;
 	if (line[n] != ' ' && line[n] != '\0')
-		fdf_error(4, "We don't handle map with color");
+		fdf_error(4, "Map error, the map has some shit in it");
+	*i += n;
 	return (point);
 }
 
@@ -55,7 +57,7 @@ int		parse_line(char *line, t_coord **map, int y)
 		}
 	}
 	if (x == 0)
-		fdf_error(4, "Map error, x = 0");
+		fdf_error(4, "Map error, one line has no coord");
 	return (1);
 }
 
