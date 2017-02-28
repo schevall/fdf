@@ -6,13 +6,13 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/15 12:34:00 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/24 18:30:25 by schevall         ###   ########.fr       */
+/*   Updated: 2017/02/28 14:56:24 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-t_coord	*add_point(int x, int y, char *line, int *i)
+static t_coord	*add_point(int x, int y, char *line, int *i)
 {
 	t_coord *point;
 	int		n;
@@ -31,12 +31,12 @@ t_coord	*add_point(int x, int y, char *line, int *i)
 	if (line[n] == ',')
 		n += 9;
 	if (line[n] != ' ' && line[n] != '\0')
-		fdf_error(4, "Map error, the map has some shit in it");
+		fdf_error(4, "Map error");
 	*i += n;
 	return (point);
 }
 
-int		parse_line(char *line, t_coord **map, int y)
+static int		parse_line(char *line, t_coord **map, int y)
 {
 	int		x;
 	int		i;
@@ -61,7 +61,7 @@ int		parse_line(char *line, t_coord **map, int y)
 	return (1);
 }
 
-void	make_map(int fd, t_coord **map)
+static void		make_map(int fd, t_coord **map)
 {
 	char	*line;
 	int		y;
@@ -78,7 +78,7 @@ void	make_map(int fd, t_coord **map)
 		fdf_error(4, "Map error, y = 0");
 }
 
-void	link_point(t_coord *map)
+static void		link_point(t_coord *map)
 {
 	t_coord	*current;
 	t_coord *below;
@@ -97,7 +97,7 @@ void	link_point(t_coord *map)
 	}
 }
 
-void	parsing(int fd, t_par *p)
+void			parsing(int fd, t_par *p)
 {
 	t_coord		*map;
 

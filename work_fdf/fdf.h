@@ -6,7 +6,7 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 14:29:16 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/24 18:54:08 by schevall         ###   ########.fr       */
+/*   Updated: 2017/02/28 16:34:12 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@
 # define GREEN 0x0000FF00
 # define BLACK 0x000000
 # define BLUE 0x000000FF
-# define BROWN 0x008B4513
 
 # define WIDTH 2500
 # define HEIGHT 1300
@@ -39,7 +38,6 @@ typedef struct	s_coord
 	int				z;
 	int				xs;
 	int				ys;
-	int				color;
 	int				elev;
 	struct s_coord	*right;
 	struct s_coord	*down;
@@ -69,7 +67,6 @@ typedef struct	s_par
 	int				endian;
 	int				color;
 	int				color_img;
-	int				color_funct_z;
 	int				max_xs;
 	int				max_ys;
 	int				min_xs;
@@ -92,7 +89,6 @@ void			get_coord(t_par *p);
 void			get_ratio(t_par *p);
 void			get_new_coord(t_par *p);
 unsigned int	color_tab(t_par *p);
-unsigned int	color_with_z(t_coord *ori, t_coord *dest, t_par *p);
 void			change_contrast(t_par *p);
 
 #endif

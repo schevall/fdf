@@ -6,7 +6,7 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/13 17:30:47 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/24 18:37:29 by schevall         ###   ########.fr       */
+/*   Updated: 2017/02/28 14:58:39 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ void	init_img_spec(t_par *p, int mode)
 	{
 		p->color = 0;
 		p->z_pad = 0;
-		p->color_funct_z = 0;
 		p->coord_type = 1;
 		p->color_img = 1;
 		p->ratio_z = 1;
@@ -35,6 +34,7 @@ void	init_img_spec(t_par *p, int mode)
 
 int		keys(int keycode, t_par *p)
 {
+	ft_printf("keycode = %d\n", keycode);
 	if (keycode == 53)
 		exit(EXIT_SUCCESS);
 	else if (keycode == 8)
@@ -47,8 +47,6 @@ int		keys(int keycode, t_par *p)
 		p->z_pad = -2;
 	else if (keycode == 7)
 		p->z_pad = 2;
-	else if (keycode == 5)
-		p->color_funct_z = ((p->color_funct_z == 0) ? 1 : 0);
 	else if (keycode == 0 && p->ratio_z > -15)
 		p->ratio_z -= 2;
 	else if (keycode == 1 && p->ratio_z < 15)

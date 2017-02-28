@@ -6,27 +6,24 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/15 16:14:28 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/24 18:53:57 by schevall         ###   ########.fr       */
+/*   Updated: 2017/02/28 14:57:22 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	put_pixel(int x, int y, t_par *p, t_coord *ori, t_coord *dest)
+static void		put_pixel(int x, int y, t_par *p)
 {
 	char		*mem_tmp;
 
 	if ((x > 0 && x <= p->width) || (y > 0 && y <= p->height))
 	{
 		mem_tmp = p->mem + p->bpp / 8 * x + p->sline * y;
-		if (p->color_funct_z == 1)
-			*(int*)mem_tmp = color_with_z(ori, dest, p);
-		else
-			*(int*)mem_tmp = color_tab(p);
+		*(int*)mem_tmp = color_tab(p);
 	}
 }
 
-void	init_segment(t_segment *seg, t_coord *ori, t_coord *dest)
+static void		init_segment(t_segment *seg, t_coord *ori, t_coord *dest)
 {
 	seg->x = ori->xs;
 	seg->y = ori->ys;
@@ -37,7 +34,7 @@ void	init_segment(t_segment *seg, t_coord *ori, t_coord *dest)
 	seg->e1 = (seg->dx > seg->dy ? seg->dx : -(seg->dy)) / 2;
 }
 
-int		draw_segment(t_coord *ori, t_coord *dest, t_par *p)
+static int		draw_segment(t_coord *ori, t_coord *dest, t_par *p)
 {
 	int			i;
 	t_segment	s;
@@ -48,7 +45,7 @@ int		draw_segment(t_coord *ori, t_coord *dest, t_par *p)
 	init_segment(&s, ori, dest);
 	while (s.x != dest->xs || s.y != dest->ys)
 	{
-		put_pixel(s.x, s.y, p, ori, dest);
+		put_pixel(s.x, s.y, p);
 		s.e2 = s.e1;
 		if (s.e2 > -s.dx)
 		{
@@ -64,7 +61,7 @@ int		draw_segment(t_coord *ori, t_coord *dest, t_par *p)
 	return (1);
 }
 
-void	create_image(t_par *p)
+static void		create_image(t_par *p)
 {
 	t_coord		*tmp;
 	t_coord		*point;
@@ -78,7 +75,7 @@ void	create_image(t_par *p)
 		point = tmp;
 		while (point)
 		{
-			put_pixel(point->xs, point->ys, p, point, point);
+			put_pixel(point->xs, point->ys, p);
 			draw_segment(point, point->right, p);
 			draw_segment(point, point->down, p);
 			point = point->right;
@@ -87,7 +84,7 @@ void	create_image(t_par *p)
 	}
 }
 
-void	display_img(t_par *p, int mode)
+void			display_img(t_par *p, int mode)
 {
 	if (mode == 2)
 	{
