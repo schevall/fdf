@@ -6,7 +6,7 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/13 17:30:47 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/28 14:58:39 by schevall         ###   ########.fr       */
+/*   Updated: 2017/03/01 15:18:13 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,21 @@ void	init_img_spec(t_par *p, int mode)
 	p->max_ys = INT_MIN;
 	p->min_xs = INT_MAX;
 	p->min_ys = INT_MAX;
+	p->div_ratio_x = 1;
+	p->div_ratio_y = 1;
+}
+
+void	get_ratio_for_big_map(t_par *p)
+{
+	ft_printf("init get_ratio_for_big_map\n");
+	while (((p->max_xs - p->min_xs) / p->div_ratio_x) > WIDTH)
+		p->div_ratio_x++;
+	while (((p->max_ys - p->min_ys) / p->div_ratio_y) > HEIGHT)
+		p->div_ratio_y++;
+	ft_printf("div_ratio_x = %d, div_ratio_y = %d\n", p->div_ratio_x,
+			p->div_ratio_y);
+	p->ratio_x = 1;
+	p->ratio_y = 1;
 }
 
 int		keys(int keycode, t_par *p)
@@ -62,19 +77,22 @@ int		keys(int keycode, t_par *p)
 int		main(int ac, char **av)
 {
 	int		fd;
-	t_par	par;
+	t_par	p;
 
 	if (ac != 2)
 		fdf_error(1, NULL);
-	if (!(fd = open(av[1], O_RDONLY)))
+	if ((fd = open(av[1], O_RDONLY)) <= 0)
 		fdf_error(3, av[1]);
-	parsing(fd, &par);
+	parsing(fd, &p);
 	close(fd);
-	init_img_spec(&par, 1);
-	get_coord(&par);
-	get_ratio(&par);
-	get_new_coord(&par);
-	par.mlx = mlx_init();
-	display_img(&par, 1);
+	init_img_spec(&p, 1);
+	get_coord(&p);
+	if (p.max_xs - p.min_xs > WIDTH || p.max_ys - p.min_ys > HEIGHT)
+		get_ratio_for_big_map(&p);
+	else
+		get_ratio(&p);
+	get_new_coord(&p);
+	p.mlx = mlx_init();
+	display_img(&p, 1);
 	return (0);
 }

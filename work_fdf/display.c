@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/02/15 16:14:28 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/28 14:57:22 by schevall         ###   ########.fr       */
+/*   Created: 2017/03/01 15:11:00 by schevall          #+#    #+#             */
+/*   Updated: 2017/03/01 15:11:04 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,10 @@ void			display_img(t_par *p, int mode)
 	if (mode == 2)
 	{
 		get_coord(p);
-		get_ratio(p);
+		if (p->max_xs - p->min_xs > WIDTH || p->max_ys - p->min_ys > HEIGHT)
+			get_ratio_for_big_map(p);
+		else
+			get_ratio(p);
 		get_new_coord(p);
 	}
 	p->win = mlx_new_window(p->mlx, p->width + 2, p->height + 2, PRG_NAME);

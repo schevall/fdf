@@ -6,13 +6,15 @@
 #    By: schevall <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/02/13 17:35:39 by schevall          #+#    #+#              #
-#    Updated: 2017/02/23 19:38:26 by schevall         ###   ########.fr        #
+#    Updated: 2017/03/01 15:33:31 by schevall         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = fdf
 FLAG = -Wall -Wextra -Werror
 OPTION = -c
+
+
 SRC = main_fdf.c\
 	  fdf_error.c\
 	  parsing.c\
@@ -27,8 +29,8 @@ OBJ_PATH = obj/
 
 $(NAME): $(OBJ)
 	@make -C ./libft/
-	@gcc -o $(NAME) -L ./libft/ -lft -L ./libft/printf/ -lftprintf -lm -lmlx \
-		-framework OpenGL -framework AppKit  $(FLAG) $(OBJ)
+	@gcc -o $(NAME) -L ./libft/ -lft -L ./libft/printf/ -lftprintf\
+		-lm -lmlx -framework OpenGL -framework AppKit  $(FLAG) $(OBJ)
 
 all: $(NAME)
 

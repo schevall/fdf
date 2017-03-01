@@ -6,7 +6,7 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/14 14:29:16 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/28 16:34:12 by schevall         ###   ########.fr       */
+/*   Updated: 2017/03/01 15:34:53 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ typedef struct	s_par
 	int				z_pad;
 	int				ratio_z;
 	int				coord_type;
+	int				div_ratio_x;
+	int				div_ratio_y;
 }				t_par;
 
 void			parsing(int fd, t_par *p);
@@ -87,6 +89,7 @@ int				keys(int keycode, t_par *p);
 void			fdf_error(int mode, char *error);
 void			get_coord(t_par *p);
 void			get_ratio(t_par *p);
+void			get_ratio_for_big_map(t_par *p);
 void			get_new_coord(t_par *p);
 unsigned int	color_tab(t_par *p);
 void			change_contrast(t_par *p);

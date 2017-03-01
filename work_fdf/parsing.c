@@ -6,7 +6,7 @@
 /*   By: schevall <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/15 12:34:00 by schevall          #+#    #+#             */
-/*   Updated: 2017/02/28 14:56:24 by schevall         ###   ########.fr       */
+/*   Updated: 2017/03/01 15:11:55 by schevall         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ static void		make_map(int fd, t_coord **map)
 	int		y;
 
 	y = 0;
+	ft_printf("fd = %d\n", fd);
 	while (get_next_line(fd, &line) == 1)
 	{
 		parse_line(line, map, y);
@@ -101,7 +102,9 @@ void			parsing(int fd, t_par *p)
 {
 	t_coord		*map;
 
+	ft_printf("Init parsing\n");
 	make_map(fd, &map);
 	link_point(map);
 	p->map = map;
+	ft_printf("Parsing is finished\n");
 }
